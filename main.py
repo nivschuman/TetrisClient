@@ -6,4 +6,4 @@ try:
     game = Game()
     game.main_menu()
 except ConnectionRefusedError:
-    print("Cannot play because server is offline duby")
+    print("Cannot play because server is offline niv")
