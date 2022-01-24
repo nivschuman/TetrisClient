@@ -123,7 +123,6 @@ class Graphics:
             if update:
                 pygame.display.update()
 
-    # todo make button text be label?! also able to change position of button
     class Button:
         def __init__(self, x, y, width, height, rgb, text, screen):
             self._rect = pygame.Rect(x, y, width, height)
@@ -178,12 +177,12 @@ class Graphics:
 
             return False
 
-    # todo remove text, move bar left and right
     class TextBox(Button):
         def __init__(self, x, y, width, height, rgb, text_font, text_color, screen):
             super().__init__(x, y, width, height, rgb, Text("", text_font, text_color), screen)
 
             self.__activated = False
+            self.__caps_lock_on = False
 
             self.__bar_idx = -1  # index of |
 
@@ -200,11 +199,38 @@ class Graphics:
             else:
                 self.__deactivate()
 
+        @property
+        def caps_lock_on(self):
+            return self.__caps_lock_on
+
+        @caps_lock_on.setter
+        def caps_lock_on(self, value):
+            self.__caps_lock_on = value
+
+        def move_left(self):
+            if self.__activated and self.__bar_idx != 0:
+                new_text = self.text.text[:self.__bar_idx] + self.text.text[self.__bar_idx+1:]
+                self.__bar_idx -= 1
+                new_text = new_text[:self.__bar_idx] + "|" + new_text[self.__bar_idx:]
+
+                self.text = Text(new_text, self.text.font_size, self.text.color)
+
+        def move_right(self):
+            if self.__activated and self.__bar_idx != len(self.text.text)-1:
+                new_text = self.text.text[:self.__bar_idx] + self.text.text[self.__bar_idx + 1:]
+                self.__bar_idx += 1
+                new_text = new_text[:self.__bar_idx] + "|" + new_text[self.__bar_idx:]
+
+                self.text = Text(new_text, self.text.font_size, self.text.color)
+
         def add_text(self, text):
             if self.__activated:
+                if self.__caps_lock_on:
+                    text = text.upper()
+
                 new_text = self.text.text[:self.__bar_idx] + text + self.text.text[self.__bar_idx:]
                 self.text = Text(new_text, self.text.font_size, self.text.color)
-                self.__bar_idx = len(self.text.text)-1
+                self.__bar_idx += len(text)
 
         def delete_text(self, amount):
             new_text = ""
@@ -226,12 +252,18 @@ class Graphics:
 
             return False
 
+        def change_caps_lock_state(self):
+            if self.__caps_lock_on:
+                self.__caps_lock_on = False
+            else:
+                self.__caps_lock_on = True
+
         def __activate(self):
             new_text = self.text.text + "|"
             self.__bar_idx = len(new_text) - 1
             self.text = Text(new_text, self.text.font_size, self.text.color)
 
         def __deactivate(self):
-            new_text = self.text.text[:self.__bar_idx]
+            new_text = self.text.text[:self.__bar_idx] + self.text.text[self.__bar_idx+1:]
             self.__bar_idx -= 1
             self.text = Text(new_text, self.text.font_size, self.text.color)

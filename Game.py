@@ -16,7 +16,6 @@ class Game:
         self.__graphics = Graphics()
         self.__board = Board(10, 20, 40)
 
-    # todo set up main menu - create game and join game buttons
     def main_menu(self):
         text1 = Text("create game", 90, (255, 255, 255))
         text2 = Text("join game", 120, (255, 255, 255))
@@ -84,9 +83,8 @@ class Game:
 
                     Game.send_attack(cleared)
 
-                # todo don't let others attack me when dead
                 if not self.__board.playable:
-                    Game.SERVER.update_board("None")
+                    Game.SERVER.update_board(None)
                     running = False
 
         while True:
@@ -151,14 +149,23 @@ class Game:
                             if joined:
                                 running = False
                                 break
-                elif event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN:
                     if text_box.activated:
                         if event.key == pygame.K_BACKSPACE:
                             text_box.delete_text(1)
+                        elif event.key == pygame.K_DELETE:
+                            text_length = len(text_box.text.text)
+                            text_box.delete_text(text_length)
                         elif event.key == pygame.K_SPACE:
                             text_box.add_text(" ")
                         elif event.key == pygame.K_RETURN:
                             text_box.activated = False
+                        elif event.key == pygame.K_LEFT:
+                            text_box.move_left()
+                        elif event.key == pygame.K_RIGHT:
+                            text_box.move_right()
+                        elif event.key == pygame.K_CAPSLOCK:
+                            text_box.change_caps_lock_state()
                         else:
                             key_name = pygame.key.name(event.key)
                             text_box.add_text(key_name)

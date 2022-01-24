@@ -14,7 +14,7 @@ class Server:
     def __init__(self):
         self.__header = 10
         self.__port = 5050
-        self.__server = "10.100.102.24"
+        self.__server = "54.167.236.170"
         self.__addr = (self.__server, self.__port)
         self.__format = "utf-8"
         self.__disconnect_message = "DISCONNECT"
@@ -91,6 +91,9 @@ class Server:
 
     @staticmethod
     def board_to_str(board):
+        if board is None:
+            return "None"
+
         board_str = ""
         for i in range(len(board)):
             for item in board[i]:
@@ -101,6 +104,7 @@ class Server:
 
         return board_str
 
+    # todo deal with ValueError: invalid literal for int() with base 10: 'N'
     @staticmethod
     def retrieve_board(board_str):
         if board_str == "None":

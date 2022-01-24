@@ -160,7 +160,7 @@ class Board:
 
         return cleared
 
-    # todo add lose condition(make piece go up if needed). Might need fixing
+    # todo add lose condition(make piece go up if needed). Stop pieces from becoming huge.
     def add_lines(self, amount):
         empty_row_idx = random.randint(0, self.length-1)
 
